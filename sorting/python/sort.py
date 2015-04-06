@@ -29,8 +29,11 @@ Proof of ownership: https://keybase.io/elliotbriggs
 
 from numpy import random
 from numpy import array
+from numpy import reshape
+from numpy import append
+from numpy import ceil
 
-numpoints = 16
+numpoints = 22
 unsorted = random.randint(numpoints, size=numpoints)
 alreadysorted = sorted(array(unsorted, copy=True))
 
@@ -75,10 +78,26 @@ def bubblesort(unsorted):
 
 def shellsort(unsorted, gaps):
 	for gap in gaps:
+		print "gap: %s"%(gap)
 		for i in range(0,gap,1):
 			points = range(i,numpoints,gap)
+			print unsorted[points]
 			shellgap = insertionsort(unsorted[points])
 			unsorted[points] = shellgap
+	return unsorted
+
+def mergesort(unsorted):
+	windowsize=1
+	while (windowsize < numpoints):	
+		windowsize = windowsize * 2
+		if windowsize > numpoints:
+			windowsize = numpoints
+		print "windowsize: %d"%(windowsize)
+		for window in range(numpoints/windowsize):
+			print "window index: %d"%(window)
+			i = range(window*windowsize,window*windowsize+windowsize,1)
+			unsorted[i] = insertionsort(unsorted[i])
+		print unsorted
 	return unsorted
 
 print "----------insertion sort----------"
@@ -88,10 +107,6 @@ isort = array(unsorted, copy=True)
 isort = insertionsort(isort)
 print "completed:"
 print isort
-if (isort == alreadysorted).all():
-    print "sorted OK!"
-else:
-    print "sort failed!"
 
 print "----------selection sort----------"
 print "unsorted:"
@@ -100,10 +115,6 @@ selsort = array(unsorted, copy=True)
 selsort = selectionsort(selsort)
 print "completed:"
 print selsort
-if (selsort == alreadysorted).all():
-    print "sorted OK!"
-else:
-    print "sort failed!"
 
 print "----------bubble sort----------"
 print "unsorted:"
@@ -112,22 +123,46 @@ bubsort = array(unsorted, copy=True)
 bubsort = bubblesort(bubsort)
 print "completed:"
 print bubsort
-if (bubsort == alreadysorted).all():
-    print "sorted OK!"
-else:
-    print "sort failed!"
 
 print "----------shell's sort----------"
 print "unsorted:"
 print unsorted
 shellsorted = array(unsorted, copy=True)
-gaps = [5,3,1] # this is fairly arbitrary, always end with 1 though
+gaps = [7,5,3,1] # this is fairly arbitrary, always end with 1 though
 shellsorted = shellsort(shellsorted, gaps)
 print "completed:"
 print shellsorted
-if (shellsorted == alreadysorted).all():
-    print "sorted OK!"
+
+print "----------merge sort----------"
+print "unsorted:"
+print unsorted
+mergesorted = array(unsorted, copy=True)
+mergesorted = mergesort(mergesorted)
+print "completed:"
+print mergesorted
+
+print "----------test results----------"
+if (isort == alreadysorted).all():
+    print "insertion sort sorted OK!"
 else:
-    print "sort failed!"
+    print "insertion sort failed!"
 
+if (selsort == alreadysorted).all():
+    print "selection sort sorted OK!"
+else:
+    print "selection sort failed!"
 
+if (bubsort == alreadysorted).all():
+    print "bubble sort sorted OK!"
+else:
+    print "bubble sort failed!"
+
+if (shellsorted == alreadysorted).all():
+    print "shell's sort sorted OK!"
+else:
+    print "shell's sort failed!"
+
+if (mergesorted == alreadysorted).all():
+    print "merge sort sorted OK!"
+else:
+    print "merge sort failed!"
